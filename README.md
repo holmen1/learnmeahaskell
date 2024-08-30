@@ -16,6 +16,21 @@ To load and test functions in GHCi:
 ```sh
 ghci curry.hs
 ```
+### HUnit
+```sh
+cabal install --lib HUnit
+```
+
+```sh
+ghci  
+:load Calculator.hs  
+ghci> runTestTT tests  
+Cases: 2  Tried: 2  Errors: 0  Failures: 0  
+Counts {cases = 2, tried = 2, errors = 0, failures = 0}  
+```
+
+
+
 
 ## Reference
 This project is based on the book "Learn You a Haskell for Great Good!" by Miran Lipovača:
