@@ -2,53 +2,37 @@ module Calculator where
 
 import Data.List
 import Test.HUnit
-import GHC.Generics (C)
+import Text.ParserCombinators.ReadP (string)
 
 {- Reverse Polish notation calculator -}
 -- 10 4 3 + 2 * - = 10 - (4 + 3) * 2 = -4
 -- RPN "10 4 3 + 2 * -" = -4
 
-data Operator = Add | Subtract | Multiply deriving (Eq, Show)
+type Expression = String
+type ExpressionList = [Expression]
 
+type CalcStack = [Float]
 
-class Read b => Expression b where
-    toNumber :: b -> Double
-    isOperator :: b -> Maybe Operator
-instance Expression String where
-    toNumber = read
-    isOperator "+" = Just Add
-    isOperator "-" = Just Subtract
-    isOperator "*" = Just Multiply
-    isOperator _   = Nothing
-type ExpressionList b = [b]
+stringToExpressionList :: String -> ExpressionList
+stringToExpressionList = words
 
-class Num a => CalcItem a
-instance CalcItem Int
-type CalcStack a = [a]
+foldingFunction :: CalcStack -> Expression -> CalcStack
+foldingFunction (x:y:ys) "*" = (x * y):ys
+foldingFunction (x:y:ys) "+" = (x + y):ys
+foldingFunction (x:y:ys) "-" = (y - x):ys
+foldingFunction xs numberString = read numberString:xs
 
-foldingFunction :: (CalcItem a, Expression b) => CalcStack a -> b -> CalcStack a
-foldingFunction (x:y:ys) op = case isOperator op of
-    Just Multiply -> (x * y) : ys
-    Just Add      -> (x + y) : ys
-    Just Subtract -> (y - x) : ys
-    Nothing       -> (fromIntegral (round (toNumber op))) : x : y : ys
-foldingFunction xs numberString = (fromIntegral (round (toNumber numberString))) : xs
-
-
-solveRPN :: CalcItem a => String -> a
-solveRPN = head . foldl foldingFunction [] . words
-
-
+solveRPN :: String -> Float
+solveRPN = head . foldl foldingFunction [] . stringToExpressionList
 
 
 {- Unit Tests -}                      
 wordTest = TestCase (assertEqual "words" ["10","4","3","+","2","*","-"] (words "10 4 3 + 2 * -" ))
 readTest = TestCase (assertEqual "read" 4 (read "4"))
-rpnTest = TestCase (assertEqual "rpn" (-4 :: Int) (solveRPN "10 4 3 + 2 * -" ))
+rpnTest = TestCase (assertEqual "rpn" (-4.0) (solveRPN "10 4 3 + 2 * -"))
+
 tests = TestList [wordTest,
                   readTest,
                   rpnTest]
 
-unitTests :: IO Counts
-unitTests = runTestTT tests
 
