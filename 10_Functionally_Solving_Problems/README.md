@@ -48,3 +48,36 @@ ghci> runTestTT tests
 Cases: 3  Tried: 3  Errors: 0  Failures: 0
 Counts {cases = 3, tried = 3, errors = 0, failures = 0}
 ```
+
+## PS
+foldr (fold right)
+foldr processes the list from right to left. It takes three arguments:
+
+A binary function f of type (a -> b -> b).
+An initial accumulator value z of type b.
+A list [x1, x2, ..., xn] of type [a].
+Mathematically, foldr f z [x1, x2, ..., xn] is defined as:
+
+foldr f z [x1, x2, ..., xn] = x1 f (x2  f (... (xn f z) ...))
+
+For example, if f is the division operator / and the list is [1, 2, 3] with an initial value 1, then:
+
+foldr (/) 1 [1, 2, 3] = 1 / (2 / (3 / 1))
+
+foldl (fold left)
+foldl processes the list from left to right. It takes three arguments:
+
+A binary function f of type (b -> a -> b).
+An initial accumulator value z of type b.
+A list [x1, x2, ..., xn] of type [a].
+Mathematically, foldl f z [x1, x2, ..., xn] is defined as:
+
+foldl f z [x1, x2, ..., xn] = (...((z  f  x1) f x2) f ...) f xn 
+
+For example, if f is the division operator / and the list is [1, 2, 3] with an initial value 1, then:
+
+foldl (/) 1 [1, 2, 3] = ((1 / 1) / 2) / 3 
+
+Summary
+foldr starts folding from the rightmost element of the list and applies the function f recursively.
+foldl starts folding from the leftmost element of the list and applies the function f iteratively.
