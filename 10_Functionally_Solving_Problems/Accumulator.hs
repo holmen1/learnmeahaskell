@@ -54,3 +54,27 @@ Using foldl to divide elements [1, 2, 3], using 1 as the initial value:
 ("foldl",1 % 1,2 % 1)
 ("foldl",1 % 2,3 % 1)
 1 % 6 -}
+
+-- Let us analyze foldRight and foldLeft with the divideFunction applied
+-- to the list [1, 2, 3] and the initial value 1:
+
+-- foldRight (/) 1 [1, 2, 3] =
+-- foldRight (/) 1 1:[2, 3] =
+-- (/) 1 (foldRight (/) 1 [2, 3]) =
+-- (/) 1 (foldRight (/) 1 2:[3]) =
+-- (/) 1 ((/) 2 (foldRight (/) 1 [3])) =
+-- (/) 1 ((/) 2 ((/) 3 (foldRight (/) 1 []))) =
+-- (/) 1 ((/) 2 ((/) 3 1)) =
+-- (/) 1 ((/) 2 3) =
+-- (/) 1 (2 % 3) =
+-- 3 % 2
+
+-- foldLeft (/) 1 [1, 2, 3] =
+-- foldLeft (/) 1 1:[2, 3] =
+-- foldLeft (/) ((/) 1 1) [2, 3] =
+-- foldLeft (/) (1 % 1) [2, 3] =
+-- foldLeft (/) (1 % 1) 2:[3] =
+-- foldLeft (/) ((/) (1 % 1) 2) [3] =
+-- foldLeft (/) (1 % 2) [3] =  
+-- foldLeft (/) ((/) (1 % 2) 3) [] =
+-- 1 % 6
